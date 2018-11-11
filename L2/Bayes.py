@@ -3,8 +3,8 @@
 import os
 
 # Path
-DATA_PATH = "20_newsgroups/"
-TRAIN_PATH = "mini_newsgroups/"
+TRAIN_PATH = "20_newsgroups/"
+TEST_DATA_PATH = "mini_newsgroups/"
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 feature_category_data = {}
@@ -33,8 +33,8 @@ category_count_data = {}
 # talk.religion.misc
 
 
-def get_words(path):
-    news_letter = open(path)
+def get_words(doc_path):
+    news_letter = open(doc_path)
     letters = news_letter.read().split("\n\n")
     news_words = []
     stopwords = map(lambda s: s.strip(), open("stopwords.txt").readlines())
@@ -61,7 +61,8 @@ def get_words(path):
 
 def load_training_data():
     classify_names = os.listdir(TRAIN_PATH)
-    classify_names.remove('.DS_Store')
+    if '.DS_Store' in classify_names:
+        classify_names.remove('.DS_Store')
     data_dict = {}
     for classify_name in classify_names:
 
@@ -80,7 +81,7 @@ def load_training_data():
     return data_dict
 
 
-def classify_training_data(data):
+def training_data(data):
     for data_key in data.keys():
         list_data = data[data_key]
         category_count_data.setdefault(data_key, 0)
@@ -146,7 +147,7 @@ def classify_doc(doc):
     best = ""
     for category in category_count_data.keys():
         prob = prob_category_in_doc(doc, category)
-        print (category, prob)
+        # print (category, prob)
         if prob > max_value:
             max_value = prob
             best = category
@@ -154,10 +155,29 @@ def classify_doc(doc):
     return best
 
 
+def test_training_prob():
+    test_names = os.listdir(TEST_DATA_PATH)
+    if '.DS_Store' in test_names:
+        test_names.remove('.DS_Store')
+    for test_name in test_names:
+        news_dir = CURRENT_PATH + "/" + TEST_DATA_PATH + test_name
+        file_names = os.listdir(news_dir)
+        i = 0
+        for letter_file in file_names:
+            result = classify_doc(news_dir + "/" + letter_file)
+            if result == test_name:
+                i += 1
+
+        print (test_name + "prob is :  " + str(float(i)/100))
+
+
 if __name__ == '__main__':
 
-    classify_training_data(load_training_data())
+    training_data(load_training_data())
+    test_training_prob()
+    # Test single one
+    # path = CURRENT_PATH + "/" + DATA_PATH + "soc.religion.christian/" + "20629"
+    # result = classify_doc(path)
+    # print result
 
-    path = CURRENT_PATH + "/" + DATA_PATH + "comp.graphics/" + "39620"
-    result = classify_doc(path)
-    print result
+
