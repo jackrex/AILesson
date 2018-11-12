@@ -1,21 +1,21 @@
 /System/Library/Frameworks/Python.framework/Versions/2.7/bin/python /Users/jackrex/Desktop/AILesson/L2/Bayes.py
-talk.politics.mideastprob is :  0.88
-rec.autosprob is :  0.07
-comp.sys.mac.hardwareprob is :  0.13
-alt.atheismprob is :  0.36
-rec.sport.baseballprob is :  0.18
-comp.os.ms-windows.miscprob is :  0.05
-rec.sport.hockeyprob is :  0.5
-sci.cryptprob is :  0.56
-sci.medprob is :  0.24
-talk.politics.miscprob is :  0.73
-rec.motorcyclesprob is :  0.07
-comp.windows.xprob is :  0.71
-comp.graphicsprob is :  0.52
-comp.sys.ibm.pc.hardwareprob is :  0.37
-sci.electronicsprob is :  0.08
-talk.politics.gunsprob is :  0.19
-sci.spaceprob is :  0.29
-soc.religion.christianprob is :  0.72
-misc.forsaleprob is :  0.2
-talk.religion.miscprob is :  0.1
+sci.crypt prob is :  0.726666666667
+comp.sys.mac.hardware prob is :  0.476666666667
+talk.politics.misc prob is :  0.696666666667
+soc.religion.christian prob is :  0.720538720539
+rec.motorcycles prob is :  0.433333333333
+sci.med prob is :  0.593333333333
+comp.graphics prob is :  0.72
+comp.windows.x prob is :  0.706666666667
+comp.sys.ibm.pc.hardware prob is :  0.543333333333
+talk.politics.guns prob is :  0.41
+alt.atheism prob is :  0.406666666667
+comp.os.ms-windows.misc prob is :  0.336666666667
+sci.space prob is :  0.573333333333
+talk.religion.misc prob is :  0.186666666667
+misc.forsale prob is :  0.31
+rec.sport.hockey prob is :  0.796666666667
+rec.sport.baseball prob is :  0.64
+talk.politics.mideast prob is :  0.763333333333
+rec.autos prob is :  0.453333333333
+sci.electronics prob is :  0.303333333333
