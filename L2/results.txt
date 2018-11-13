@@ -1,21 +1,23 @@
 /System/Library/Frameworks/Python.framework/Versions/2.7/bin/python /Users/jackrex/Desktop/AILesson/L2/Bayes.py
-sci.crypt prob is :  0.726666666667
-comp.sys.mac.hardware prob is :  0.476666666667
-talk.politics.misc prob is :  0.696666666667
-soc.religion.christian prob is :  0.720538720539
-rec.motorcycles prob is :  0.433333333333
-sci.med prob is :  0.593333333333
-comp.graphics prob is :  0.72
-comp.windows.x prob is :  0.706666666667
-comp.sys.ibm.pc.hardware prob is :  0.543333333333
-talk.politics.guns prob is :  0.41
-alt.atheism prob is :  0.406666666667
-comp.os.ms-windows.misc prob is :  0.336666666667
-sci.space prob is :  0.573333333333
-talk.religion.misc prob is :  0.186666666667
-misc.forsale prob is :  0.31
-rec.sport.hockey prob is :  0.796666666667
-rec.sport.baseball prob is :  0.64
-talk.politics.mideast prob is :  0.763333333333
-rec.autos prob is :  0.453333333333
-sci.electronics prob is :  0.303333333333
+sci.crypt prob is :  0.553333333333
+comp.sys.mac.hardware prob is :  0.94
+talk.politics.misc prob is :  0.123333333333
+soc.religion.christian prob is :  0.902356902357
+rec.motorcycles prob is :  0.95
+sci.med prob is :  0.103333333333
+comp.graphics prob is :  0.143333333333
+comp.windows.x prob is :  0.29
+comp.sys.ibm.pc.hardware prob is :  0.923333333333
+talk.politics.guns prob is :  0.42
+alt.atheism prob is :  0.67
+comp.os.ms-windows.misc prob is :  0.566666666667
+sci.space prob is :  0.353333333333
+talk.religion.misc prob is :  0.0833333333333
+misc.forsale prob is :  0.843333333333
+rec.sport.hockey prob is :  0.513333333333
+rec.sport.baseball prob is :  0.773333333333
+talk.politics.mideast prob is :  0.356666666667
+rec.autos prob is :  0.816666666667
+sci.electronics prob is :  0.606666666667
+
+Process finished with exit code 0

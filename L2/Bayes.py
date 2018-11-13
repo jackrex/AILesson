@@ -45,46 +45,46 @@ def get_words(doc_path):
     pattern = re.compile(r'.*\d+')
     for i in range(len(letters)):
         # remove header
-        if i == 0:
-            continue
+        # if i == 0:
+        #     continue
 
-        if i == len(letters) - 1:
-            # assume > 100 is good one, this letter not have signature
-            if len(letters[i]) < 100:
-                continue
+        # if i == len(letters) - 1:
+        #     # assume > 100 is good one, this letter not have signature
+        #     if len(letters[i]) < 100:
+        #         continue
+        #
+        #     if "--" in letters[i]:
+        #         continue
 
-            if "--" in letters[i]:
-                continue
-
-        text = letters[i].replace(",", "").replace(".", "").replace("*", "").replace("!", "").replace("?", "").replace(
-            ">", "").replace(":", "").replace("-", "").replace("\"", "").replace("\n", " ").replace("\t", " ")
-        words = text.split(" ")
+        text = letters[i]
+        words = re.split(r'[`\-=~!@#$%^&*()_+\n\[\]{};\'\\:"|<,./<>?]', text)
         for word in words:
             # cast to lower case
             word = word.lower()
+            word = word.strip()
 
             # filter email & empty words
-            if len(word) <= 1:
-                continue
+            # if len(word) <= 1:
+            #     continue
 
-            # filter numbers
-            if pattern.match(word) is not None:
-                continue
-
-            if word.find("@") != -1:
-                continue
-
-            if word.find("(") != -1:
-                continue
-
-            if word.find(")") != -1:
-                continue
-
-            if word.find("]") != -1:
-                continue
-
-            if word.find("[") != -1:
-                continue
+            # # # filter numbers
+            # if pattern.match(word) is not None:
+            #     continue
+            #
+            # if word.find("@") != -1:
+            #     continue
+            #
+            # if word.find("(") != -1:
+            #     continue
+            #
+            # if word.find(")") != -1:
+            #     continue
+            #
+            # if word.find("]") != -1:
+            #     continue
+            #
+            # if word.find("[") != -1:
+            #     continue
 
             if word in stopwords:
                 continue
@@ -152,18 +152,16 @@ def prob_word_in_category(word, category):
         return 0
     numerator = word_in_category(word, category)
     denominator = category_count(category)
-    basic_prob = float(numerator) / denominator
-
-    # avoid zero
-    if basic_prob == 0:
-        return float(1.0)/100000
+    basic_prob = float(numerator + 1) / denominator + 1
+    return basic_prob
 
 
 def prob_doc_in_category(doc, category):
     words = get_words(doc)
     p = 1
     for word in words:
-        p *= prob_word_in_category(word, category)
+        p1 = prob_word_in_category(word, category)
+        p += p1
     return p
 
 
@@ -243,21 +241,15 @@ def test_shuffle_training_data_prob():
 
 
 if __name__ == '__main__':
-
-     # data = {"good":[["hello", "hello", "hi","how","you","best"],["hello","best"]], "bad": [["fuck","jj","not","fu","you","yy"],["fuck","jj"]]}
-     # print(training_data(data))
-
      test_shuffle_training_data_prob()
 
     # feature_category_data = training_data(load_training_data())
     # for word in feature_category_data.keys():
     #     count = 0
     #     for cate_count in feature_category_data[word].keys():
-    #       count += feature_category_data[word][cate_count]
-    #
+    #         count += feature_category_data[word][cate_count]
     #     if count > 500:
-    #         print (word + '------' + json.dumps(feature_category_data[word]))
-
+    #         print (word + str(count) +'------' + json.dumps(feature_category_data[word]))
 
     # Test mini news groups in all news groups
     # test_mini_training_prob()
