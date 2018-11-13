@@ -1,6 +1,7 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import re, json
 
 # Path
 TRAIN_PATH = "20_newsgroups/"
@@ -41,6 +42,7 @@ def get_words(doc_path):
     letters = news_letter.read().split("\n\n")
     news_words = []
     stopwords = map(lambda s: s.strip(), open("stopwords.txt").readlines())
+    pattern = re.compile(r'.*\d+')
     for i in range(len(letters)):
         # remove header
         if i == 0:
@@ -50,15 +52,23 @@ def get_words(doc_path):
             # assume > 100 is good one, this letter not have signature
             if len(letters[i]) < 100:
                 continue
+
+            if "--" in letters[i]:
+                continue
+
         text = letters[i].replace(",", "").replace(".", "").replace("*", "").replace("!", "").replace("?", "").replace(
-            ">", "").replace("\n", " ").replace("\t", " ")
+            ">", "").replace(":", "").replace("-", "").replace("\"", "").replace("\n", " ").replace("\t", " ")
         words = text.split(" ")
         for word in words:
             # cast to lower case
             word = word.lower()
 
             # filter email & empty words
-            if len(word) == 0:
+            if len(word) <= 1:
+                continue
+
+            # filter numbers
+            if pattern.match(word) is not None:
                 continue
 
             if word.find("@") != -1:
@@ -68,6 +78,12 @@ def get_words(doc_path):
                 continue
 
             if word.find(")") != -1:
+                continue
+
+            if word.find("]") != -1:
+                continue
+
+            if word.find("[") != -1:
                 continue
 
             if word in stopwords:
@@ -137,10 +153,11 @@ def prob_word_in_category(word, category):
         return 0
     numerator = word_in_category(word, category)
     denominator = category_count(category)
+    basic_prob = float(numerator) / denominator
+
     total = 0
     for cate in category_count_data.keys():
         total += word_in_category(word, cate)
-    basic_prob = float(numerator) / denominator
     # avoid zero
     return (0.5 + total * basic_prob) / (1 + total)
 
@@ -158,6 +175,7 @@ def prob_category_in_doc(doc, category):
     # p(document) = 1 or ignore
     # result =  p(document | category) * p(category)
     category_prob = category_count(category) / float(total_count())
+    # category_prob = 1
     category_doc_prob = category_prob * prob_doc_in_category(doc, category)
     return category_doc_prob
 
@@ -230,7 +248,15 @@ def test_shuffle_training_data_prob():
 if __name__ == '__main__':
     test_shuffle_training_data_prob()
 
-    # training_data(load_training_data())
+    # feature_category_data = training_data(load_training_data())
+    # for word in feature_category_data.keys():
+    #     count = 0
+    #     for cate_count in feature_category_data[word].keys():
+    #       count += feature_category_data[word][cate_count]
+    #
+    #     if count > 500:
+    #         print (word + '------' + json.dumps(feature_category_data[word]))
+
 
     # Test mini news groups in all news groups
     # test_mini_training_prob()
