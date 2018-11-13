@@ -122,12 +122,11 @@ def training_data(data):
         list_data = data[data_key]
         category_count_data.setdefault(data_key, 0)
         for words in list_data:
-            category_count_data[data_key] += 1
             for word in words:
+                category_count_data[data_key] += 1
                 feature_category_data.setdefault(word, {})
                 feature_category_data[word].setdefault(data_key, 0)
                 feature_category_data[word][data_key] += 1
-
     return feature_category_data
 
 
@@ -155,11 +154,9 @@ def prob_word_in_category(word, category):
     denominator = category_count(category)
     basic_prob = float(numerator) / denominator
 
-    total = 0
-    for cate in category_count_data.keys():
-        total += word_in_category(word, cate)
     # avoid zero
-    return (0.5 + total * basic_prob) / (1 + total)
+    if basic_prob == 0:
+        return float(1.0)/100000
 
 
 def prob_doc_in_category(doc, category):
@@ -175,7 +172,7 @@ def prob_category_in_doc(doc, category):
     # p(document) = 1 or ignore
     # result =  p(document | category) * p(category)
     category_prob = category_count(category) / float(total_count())
-    # category_prob = 1
+    category_prob = 1
     category_doc_prob = category_prob * prob_doc_in_category(doc, category)
     return category_doc_prob
 
@@ -246,7 +243,11 @@ def test_shuffle_training_data_prob():
 
 
 if __name__ == '__main__':
-    test_shuffle_training_data_prob()
+
+     # data = {"good":[["hello", "hello", "hi","how","you","best"],["hello","best"]], "bad": [["fuck","jj","not","fu","you","yy"],["fuck","jj"]]}
+     # print(training_data(data))
+
+     test_shuffle_training_data_prob()
 
     # feature_category_data = training_data(load_training_data())
     # for word in feature_category_data.keys():
