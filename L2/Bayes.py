@@ -1,14 +1,15 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
+import math
 import os
-import re, json
+import re
 
 # Path
 TRAIN_PATH = "20_newsgroups/"
 TEST_DATA_PATH = "mini_newsgroups/"
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 
-feature_category_data = {}
+word_category_data = {}
 category_count_data = {}
 data_dict = {}
 
@@ -39,58 +40,23 @@ data_dict = {}
 
 def get_words(doc_path):
     news_letter = open(doc_path)
-    letters = news_letter.read().split("\n\n")
+    letters = news_letter.read()
     news_words = []
     stopwords = map(lambda s: s.strip(), open("stopwords.txt").readlines())
-    pattern = re.compile(r'.*\d+')
-    for i in range(len(letters)):
-        # remove header
-        # if i == 0:
-        #     continue
+    words = re.split(r'[~`/ ,;{}?!\"\'$#%^&*()\\<>\n\-+\t:_=]', letters)
+    for word in words:
+        # cast to lower case
+        word = word.lower()
+        word = word.strip()
 
-        # if i == len(letters) - 1:
-        #     # assume > 100 is good one, this letter not have signature
-        #     if len(letters[i]) < 100:
-        #         continue
-        #
-        #     if "--" in letters[i]:
-        #         continue
+        # filter empty words
+        if len(word) <= 1:
+            continue
 
-        text = letters[i]
-        words = re.split(r'[`\-=~!@#$%^&*()_+\n\[\]{};\'\\:"|<,./<>?]', text)
-        for word in words:
-            # cast to lower case
-            word = word.lower()
-            word = word.strip()
+        if word in stopwords:
+            continue
 
-            # filter email & empty words
-            # if len(word) <= 1:
-            #     continue
-
-            # # # filter numbers
-            # if pattern.match(word) is not None:
-            #     continue
-            #
-            # if word.find("@") != -1:
-            #     continue
-            #
-            # if word.find("(") != -1:
-            #     continue
-            #
-            # if word.find(")") != -1:
-            #     continue
-            #
-            # if word.find("]") != -1:
-            #     continue
-            #
-            # if word.find("[") != -1:
-            #     continue
-
-            if word in stopwords:
-                continue
-
-            news_words.append(word)
-
+        news_words.append(word)
     return news_words
 
 
@@ -124,15 +90,15 @@ def training_data(data):
         for words in list_data:
             for word in words:
                 category_count_data[data_key] += 1
-                feature_category_data.setdefault(word, {})
-                feature_category_data[word].setdefault(data_key, 0)
-                feature_category_data[word][data_key] += 1
-    return feature_category_data
+                word_category_data.setdefault(word, {})
+                word_category_data[word].setdefault(data_key, 0)
+                word_category_data[word][data_key] += 1
+    return word_category_data
 
 
 def word_in_category(word, category):
-    if word in feature_category_data and category in feature_category_data[word]:
-        return feature_category_data[word][category]
+    if word in word_category_data and category in word_category_data[word]:
+        return word_category_data[word][category]
     else:
         return 0
 
@@ -158,10 +124,10 @@ def prob_word_in_category(word, category):
 
 def prob_doc_in_category(doc, category):
     words = get_words(doc)
-    p = 1
+    p = 0
     for word in words:
         p1 = prob_word_in_category(word, category)
-        p += p1
+        p += math.log(p1)
     return p
 
 
@@ -170,7 +136,6 @@ def prob_category_in_doc(doc, category):
     # p(document) = 1 or ignore
     # result =  p(document | category) * p(category)
     category_prob = category_count(category) / float(total_count())
-    category_prob = 1
     category_doc_prob = category_prob * prob_doc_in_category(doc, category)
     return category_doc_prob
 
@@ -241,15 +206,7 @@ def test_shuffle_training_data_prob():
 
 
 if __name__ == '__main__':
-     test_shuffle_training_data_prob()
-
-    # feature_category_data = training_data(load_training_data())
-    # for word in feature_category_data.keys():
-    #     count = 0
-    #     for cate_count in feature_category_data[word].keys():
-    #         count += feature_category_data[word][cate_count]
-    #     if count > 500:
-    #         print (word + str(count) +'------' + json.dumps(feature_category_data[word]))
+    test_shuffle_training_data_prob()
 
     # Test mini news groups in all news groups
     # test_mini_training_prob()
