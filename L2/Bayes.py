@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 import os
 import re, json
+import math
 
 # Path
-TRAIN_PATH = "20_newsgroups/"
+TRAIN_PATH = "mini_newsgroups/"
 TEST_DATA_PATH = "mini_newsgroups/"
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,59 +38,80 @@ data_dict = {}
 # talk.religion.misc
 
 
+# def get_words(doc_path):
+#     news_letter = open(doc_path)
+#     letters = news_letter.read().split("\n\n")
+#     news_words = []
+#     stopwords = map(lambda s: s.strip(), open("stopwords.txt").readlines())
+#     pattern = re.compile(r'.*\d+')
+#     for i in range(len(letters)):
+#         # remove header
+#         # if i == 0:
+#         #     continue
+#
+#         # if i == len(letters) - 1:
+#         #     # assume > 100 is good one, this letter not have signature
+#         #     if len(letters[i]) < 100:
+#         #         continue
+#         #
+#         #     if "--" in letters[i]:
+#         #         continue
+#
+#         text = letters[i]
+#         words = re.split(r'[ `\-=~!@#$%^&*()_+\n\[\]{};\'\\:"|<,./<>?]', text)
+#         for word in words:
+#             # cast to lower case
+#             word = word.lower()
+#             word = word.strip()
+#
+#             # filter email & empty words
+#             if len(word) <= 1:
+#                 continue
+#
+#             # # # filter numbers
+#             # if pattern.match(word) is not None:
+#             #     continue
+#             #
+#             # if word.find("@") != -1:
+#             #     continue
+#             #
+#             # if word.find("(") != -1:
+#             #     continue
+#             #
+#             # if word.find(")") != -1:
+#             #     continue
+#             #
+#             # if word.find("]") != -1:
+#             #     continue
+#             #
+#             # if word.find("[") != -1:
+#             #     continue
+#
+#             if word in stopwords:
+#                 continue
+#
+#             news_words.append(word)
+#
+#     return news_words
+
 def get_words(doc_path):
-    news_letter = open(doc_path)
-    letters = news_letter.read().split("\n\n")
+    news_letter = open(doc_path).read()
+    words = re.split(r'[\-= ~!@#$%^&*()_+\n\[\]{};\'\\:"|<,/>?]', news_letter)
     news_words = []
     stopwords = map(lambda s: s.strip(), open("stopwords.txt").readlines())
-    pattern = re.compile(r'.*\d+')
-    for i in range(len(letters)):
-        # remove header
-        # if i == 0:
-        #     continue
+    for word in words:
+        # cast to lower case
+        word = word.lower()
+        word = word.strip()
 
-        # if i == len(letters) - 1:
-        #     # assume > 100 is good one, this letter not have signature
-        #     if len(letters[i]) < 100:
-        #         continue
-        #
-        #     if "--" in letters[i]:
-        #         continue
+        # filter email & empty words
+        if len(word) <= 1:
+            continue
 
-        text = letters[i]
-        words = re.split(r'[`\-=~!@#$%^&*()_+\n\[\]{};\'\\:"|<,./<>?]', text)
-        for word in words:
-            # cast to lower case
-            word = word.lower()
-            word = word.strip()
+        if word in stopwords:
+            continue
 
-            # filter email & empty words
-            # if len(word) <= 1:
-            #     continue
-
-            # # # filter numbers
-            # if pattern.match(word) is not None:
-            #     continue
-            #
-            # if word.find("@") != -1:
-            #     continue
-            #
-            # if word.find("(") != -1:
-            #     continue
-            #
-            # if word.find(")") != -1:
-            #     continue
-            #
-            # if word.find("]") != -1:
-            #     continue
-            #
-            # if word.find("[") != -1:
-            #     continue
-
-            if word in stopwords:
-                continue
-
-            news_words.append(word)
+        news_words.append(word)
 
     return news_words
 
@@ -158,10 +180,10 @@ def prob_word_in_category(word, category):
 
 def prob_doc_in_category(doc, category):
     words = get_words(doc)
-    p = 1
+    p = 0
     for word in words:
         p1 = prob_word_in_category(word, category)
-        p += p1
+        p += math.log(p1)
     return p
 
 
