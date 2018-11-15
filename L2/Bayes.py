@@ -5,11 +5,12 @@ import re, json
 import math
 
 # Path
-TRAIN_PATH = "mini_newsgroups/"
+TRAIN_PATH = "20_newsgroups/"
 TEST_DATA_PATH = "mini_newsgroups/"
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 feature_category_data = {}
+category_feature_data = {}
 category_count_data = {}
 data_dict = {}
 
@@ -37,66 +38,9 @@ data_dict = {}
 # misc.forsale
 # talk.religion.misc
 
-
-# def get_words(doc_path):
-#     news_letter = open(doc_path)
-#     letters = news_letter.read().split("\n\n")
-#     news_words = []
-#     stopwords = map(lambda s: s.strip(), open("stopwords.txt").readlines())
-#     pattern = re.compile(r'.*\d+')
-#     for i in range(len(letters)):
-#         # remove header
-#         # if i == 0:
-#         #     continue
-#
-#         # if i == len(letters) - 1:
-#         #     # assume > 100 is good one, this letter not have signature
-#         #     if len(letters[i]) < 100:
-#         #         continue
-#         #
-#         #     if "--" in letters[i]:
-#         #         continue
-#
-#         text = letters[i]
-#         words = re.split(r'[ `\-=~!@#$%^&*()_+\n\[\]{};\'\\:"|<,./<>?]', text)
-#         for word in words:
-#             # cast to lower case
-#             word = word.lower()
-#             word = word.strip()
-#
-#             # filter email & empty words
-#             if len(word) <= 1:
-#                 continue
-#
-#             # # # filter numbers
-#             # if pattern.match(word) is not None:
-#             #     continue
-#             #
-#             # if word.find("@") != -1:
-#             #     continue
-#             #
-#             # if word.find("(") != -1:
-#             #     continue
-#             #
-#             # if word.find(")") != -1:
-#             #     continue
-#             #
-#             # if word.find("]") != -1:
-#             #     continue
-#             #
-#             # if word.find("[") != -1:
-#             #     continue
-#
-#             if word in stopwords:
-#                 continue
-#
-#             news_words.append(word)
-#
-#     return news_words
-
 def get_words(doc_path):
     news_letter = open(doc_path).read()
-    words = re.split(r'[\-= ~!@#$%^&*()_+\n\[\]{};\'\\:"|<,/>?]', news_letter)
+    words = re.split(r'[ ,;?!@$#%^&*()<>\t\n+\-~\{\}\[\]\|:\'\"/_=\\`]', news_letter)
     news_words = []
     stopwords = map(lambda s: s.strip(), open("stopwords.txt").readlines())
     for word in words:
@@ -124,10 +68,6 @@ def load_training_data():
         classify_names.remove('.DS_Store')
     for classify_name in classify_names:
 
-        # Test
-        # if classify_name != "alt.atheism":
-        #     continue
-
         news_dir = CURRENT_PATH + "/" + TRAIN_PATH + "/" + classify_name
         file_names = os.listdir(news_dir)
         all_words = []
@@ -143,12 +83,22 @@ def training_data(data):
     for data_key in data.keys():
         list_data = data[data_key]
         category_count_data.setdefault(data_key, 0)
+        category_feature_data.setdefault(data_key, {})
         for words in list_data:
             for word in words:
                 category_count_data[data_key] += 1
                 feature_category_data.setdefault(word, {})
                 feature_category_data[word].setdefault(data_key, 0)
                 feature_category_data[word][data_key] += 1
+
+                category_feature_data[data_key].setdefault(word, 0)
+                category_feature_data[data_key][word] += 1
+
+    for data_key in category_feature_data.keys():
+        for key in category_feature_data[data_key].keys():
+            if category_feature_data[data_key][key] > 50:
+                print (" " + data_key + "  " + key + "  " + str(category_feature_data[data_key][key]))
+
     return feature_category_data
 
 
@@ -174,7 +124,9 @@ def prob_word_in_category(word, category):
         return 0
     numerator = word_in_category(word, category)
     denominator = category_count(category)
-    basic_prob = float(numerator + 1) / denominator + 1
+    basic_prob = float(numerator) / denominator
+    if basic_prob == 0:
+        basic_prob = 0.00001 / denominator
     return basic_prob
 
 
@@ -191,14 +143,12 @@ def prob_category_in_doc(doc, category):
     # p(category | document) = p(document | category) * p(category) / p(document)
     # p(document) = 1 or ignore
     # result =  p(document | category) * p(category)
-    category_prob = category_count(category) / float(total_count())
-    category_prob = 1
-    category_doc_prob = category_prob * prob_doc_in_category(doc, category)
+    category_doc_prob = prob_doc_in_category(doc, category)
     return category_doc_prob
 
 
 def classify_doc(doc):
-    max_value = 0.0
+    max_value = -100000
     best = ""
     for category in category_count_data.keys():
         prob = prob_category_in_doc(doc, category)
@@ -256,6 +206,18 @@ def test_shuffle_training_data_prob():
         i = 0
         for letter_file in test_data[test_name]:
             result = classify_doc(letter_file)
+            # if test_name in "comp.graphics":
+            #     print result + " ----  " + letter_file
+            #     words = get_words(letter_file)
+            #     words_count = {}
+            #     for word in words:
+            #         words_count.setdefault(word, 0)
+            #         words_count[word] += 1
+            #
+            #     for key in words_count:
+            #        if words_count[key] > 1:
+            #            print key +  " --" +  str( words_count[key])
+
             if result == test_name:
                 i += 1
 
