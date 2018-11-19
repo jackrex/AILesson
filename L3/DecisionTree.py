@@ -74,8 +74,8 @@ def cal_shannon_entropy(data_set):
         label_counts[current_label] += 1
     shannon_entropy = 0
     for key in label_counts:
-        prob = float(label_counts[key]) / num  # 计算单个类的熵值
-        shannon_entropy -= prob * log(prob, 2)  # 累加每个类的熵值
+        prob = float(label_counts[key]) / num
+        shannon_entropy -= prob * log(prob, 2)
     return shannon_entropy
 
 
@@ -105,7 +105,7 @@ def choose_best_feature(words_data):
 
 
 def create_tree(labels, words_data):
-    result_list = [example[-1] for example in words_data]  # 类别：男或女
+    result_list = [example[-1] for example in words_data]
     if result_list.count(result_list[0]) == len(result_list):
         return result_list[0]
     if len(words_data[0]) == 1:
@@ -138,6 +138,6 @@ if __name__ == '__main__':
     labels, data = load_words_data()
     tree = create_tree(labels, data)
     print (tree)
-    with open('tree.json', 'w') as outfile:
-        json.dump(tree, outfile)
+    # with open('tree.json', 'w') as outfile:
+    #     json.dump(tree, outfile)
 
