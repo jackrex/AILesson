@@ -183,8 +183,13 @@ def cal_random_forest_prob(all_data, label):
         l = list(label)
         train_data = list(datas)
         train_data.remove(data)
+        da = []
+        for d in train_data:
+            da += d
         test_data = data
-        tree = create_tree(l, data)
+        print(da)
+        tree = create_tree(l, train_data)
+
         print(tree)
 
 
