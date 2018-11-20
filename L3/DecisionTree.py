@@ -4,6 +4,8 @@ from math import log
 from openpyxl import load_workbook
 import operator
 import json
+import time
+import random
 
 
 def load_words_data():
@@ -42,7 +44,7 @@ def load_words_data():
         else:
             fix_word_data.append("invalid search result")
 
-        if search_popular > 40:
+        if search_popular > 50:
             fix_word_data.append("popular")
         else:
             fix_word_data.append("unpopular")
@@ -134,10 +136,72 @@ def create_tree(labels, words_data):
     return decision_tree
 
 
+def create_train_test_data(all_data, label):
+    size = int(len(all_data) * 0.7)
+    t_train_data = all_data[:size]
+    t_test_data = all_data[size:]
+    t = []
+    for test in t_test_data:
+        dict = {}
+        for la in range(len(label)):
+            dict.setdefault(label[la], test[la])
+        t.append(dict)
+
+    return t_train_data, t
+
+
+def valid_data(tree, test_data):
+    valid = 0
+    for test in test_data:
+        if test['App-Name'] == 'valid words' and test['Search-Result'] == 'valid search result' and test['Search-Index'] == 'valid search index':
+            if test['Result'] == 'success':
+                valid+=1
+        else:
+            if test['Result'] == 'failed':
+                valid += 1
+
+    print('prob is ' + str(float(valid)/len(test_data)))
+    return float(valid)/len(test_data)
+
+
+def cross_validation_split_for_random_forest(data_set, n):
+    data_set_split = list()
+    data_set_copy = list(data_set)
+    fold_size = int(len(data_set) / n)
+    for i in range(n):
+        fold = list()
+        while len(fold) < fold_size:
+            index = random.randrange(len(data_set_copy))
+            fold.append(data_set_copy.pop(index))
+        data_set_split.append(fold)
+    return data_set_split
+
+
+def cal_random_forest_prob(all_data, label):
+    datas = cross_validation_split_for_random_forest(all_data, 10)
+    for data in datas:
+        l = list(label)
+        train_data = list(datas)
+        train_data.remove(data)
+        test_data = data
+        tree = create_tree(l, data)
+        print(tree)
+
+
 if __name__ == '__main__':
     labels, data = load_words_data()
-    tree = create_tree(labels, data)
+    l = list(labels)
+    random.shuffle(data)
+    train_data, test_data = create_train_test_data(data, labels)
+    t = time.time()
+    tree = create_tree(labels, train_data)
+    valid_data(tree, test_data)
+    print('time gap is:' + str(time.time() - t) )
     print (tree)
+    t1 = time.time()
+    cal_random_forest_prob(data, l)
+    print('time t1 is:' + str(time.time() - t1) )
+
     # with open('tree.json', 'w') as outfile:
     #     json.dump(tree, outfile)
 
