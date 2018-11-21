@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aada2bba-0b6e-4ac7-b47e-6c78c4ab5c19" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/Release/L3/Xiepanpeng_Report_2.pdf" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/L3/DecisionTree.py" afterPath="$PROJECT_DIR$/L3/DecisionTree.py" />
+      <change beforePath="$PROJECT_DIR$/L3/DecisionTree.py" afterPath="$PROJECT_DIR$/L3/DT-RandomForest-Ada.py" />
+      <change beforePath="$PROJECT_DIR$/L3/~$Search_Index_20181118.xlsx" afterPath="" />
     </list>
     <ignored path="AILesson.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -16,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/AILesson$AILearn.coverage" NAME="AILearn Coverage Results" MODIFIED="1542722681288" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/L3" />
+    <SUITE FILE_PATH="coverage/AILesson$AILearn.coverage" NAME="AILearn Coverage Results" MODIFIED="1542799930157" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/L3" />
     <SUITE FILE_PATH="coverage/AILesson$Unnamed.coverage" NAME="Unnamed Coverage Results" MODIFIED="1541856030811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/L2" />
     <SUITE FILE_PATH="coverage/AILesson$Test.coverage" NAME="Test Coverage Results" MODIFIED="1542624417786" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -27,30 +29,7 @@
     <favorites_list name="AILesson" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DecisionTree.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/L3/DecisionTree.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="188" column="3" lean-forward="false" selection-start-line="188" selection-start-column="3" selection-end-line="188" selection-end-column="3" />
-              <folding>
-                <element signature="e#42#62#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Bayes.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/L2/Bayes.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="179" column="13" lean-forward="false" selection-start-line="179" selection-start-column="4" selection-end-line="179" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -68,6 +47,9 @@
       <find>prob_word_in_category</find>
       <find>total_count</find>
       <find>cal_random_forest_prob</find>
+      <find>conver</find>
+      <find>valid_data</find>
+      <find>max</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -86,6 +68,7 @@
         <option value="$PROJECT_DIR$/L4/SentimentClassification.py" />
         <option value="$PROJECT_DIR$/Test.py" />
         <option value="$PROJECT_DIR$/L3/DecisionTree.py" />
+        <option value="$PROJECT_DIR$/L3/DT-RandomForest-Ada.py" />
       </list>
     </option>
   </component>
@@ -95,10 +78,10 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="178" />
-    <option name="y" value="191" />
-    <option name="width" value="1413" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="39" />
+    <option name="y" value="23" />
+    <option name="width" value="1399" />
     <option name="height" value="877" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -137,6 +120,17 @@
               <item name="AILesson" type="462c0819:PsiDirectoryNode" />
               <item name="L3" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="AILesson" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AILesson" type="462c0819:PsiDirectoryNode" />
+              <item name="Release" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AILesson" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AILesson" type="462c0819:PsiDirectoryNode" />
+              <item name="Release" type="462c0819:PsiDirectoryNode" />
+              <item name="L3" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -152,13 +146,14 @@
     <property name="SearchEverywhereHistoryKey" value="39000&#9;FILE&#9;file:///Users/jackrex/Desktop/AILesson/L2/mini_newsgroups/comp.graphics/39000&#10;76277&#9;FILE&#9;file:///Users/jackrex/Desktop/AILesson/L2/mini_newsgroups/talk.politics.mideast/76277&#10;75895&#9;FILE&#9;file:///Users/jackrex/Desktop/AILesson/L2/mini_newsgroups/talk.politics.mideast/75895&#10;religion&#9;FILE&#9;file:///Users/jackrex/Desktop/AILesson/L2/20_newsgroups/talk.religion.misc" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Release/L3" />
+      <recent name="$PROJECT_DIR$/L3" />
+      <recent name="$PROJECT_DIR$/Release/L2" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Release/L2" />
       <recent name="$PROJECT_DIR$/L2" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/L3" />
-      <recent name="$PROJECT_DIR$/Release/L2" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -187,7 +182,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="AILesson" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/L3/DecisionTree.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/L3/DT-RandomForest-Ada.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -442,22 +437,21 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="28" y="23" width="1414" height="877" extended-state="6" />
-    <editor active="true" />
+    <frame x="39" y="23" width="1399" height="877" extended-state="0" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40409207" sideWeight="0.5055269" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286445" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3478261" sideWeight="0.4944731" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1943734" sideWeight="0.4974208" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.212828" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34099153" sideWeight="0.4944731" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20460358" sideWeight="0.4974208" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21518055" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992327" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -507,9 +501,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/L3/DecisionTree.py</url>
-          <line>186</line>
-          <option name="timeStamp" value="145" />
+          <url>file://$PROJECT_DIR$/L3/DT-RandomForest-Ada.py</url>
+          <line>220</line>
+          <option name="timeStamp" value="161" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -523,7 +517,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="149" />
+      <option name="time" value="162" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -891,12 +885,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/L3/DecisionTree.py">
+    <entry file="file://$PROJECT_DIR$/L3/DT-RandomForest-Ada.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="188" column="3" lean-forward="false" selection-start-line="188" selection-start-column="3" selection-end-line="188" selection-end-column="3" />
+        <state relative-caret-position="252">
+          <caret line="169" column="13" lean-forward="true" selection-start-line="169" selection-start-column="13" selection-end-line="169" selection-end-column="13" />
           <folding>
-            <element signature="e#42#62#0" expanded="true" />
+            <element signature="e#42#67#0" expanded="false" />
           </folding>
         </state>
       </provider>

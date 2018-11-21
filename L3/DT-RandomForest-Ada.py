@@ -1,6 +1,6 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
-from math import log
+from math import log, exp
 from openpyxl import load_workbook
 import operator
 import json
@@ -55,7 +55,7 @@ def load_words_data():
             fix_word_data.append("invalid words")
 
         if search_index > 4800 and search_result < 1000 and search_popular > 40 and (
-                "fitness" in app_name.lower() or "hiit" in app_name.lower()):
+                "fitness" in app_name.lower() or "hiit" in app_name.lower() or "in" in app_name.lower() ):
             print ('keyword is ' + keyword)
             fix_word_data.append("success")
         else:
@@ -84,6 +84,7 @@ def cal_shannon_entropy(data_set):
 def choose_best_feature(words_data):
     feature_num = len(words_data[0]) - 1
     base_entropy = cal_shannon_entropy(words_data)
+    print('base_entropy is : ' + str(base_entropy))
     best_info_gain = 0
     best_feature = -1
     for i in range(feature_num):
@@ -121,7 +122,7 @@ def create_tree(labels, words_data):
         return sorted_count[0][0]
     best_feature = choose_best_feature(words_data)
     best_feature_label = labels[best_feature]
-    decision_tree = {best_feature_label: {}}  # 分类结果以字典形式保存
+    decision_tree = {best_feature_label: {}}
     del (labels[best_feature])
     feature_values = [example[best_feature] for example in words_data]
     for value in set(feature_values):
@@ -142,18 +143,41 @@ def create_train_test_data(all_data, label):
     t_test_data = all_data[size:]
     t = []
     for test in t_test_data:
-        dict = {}
+        t_dict = {}
         for la in range(len(label)):
-            dict.setdefault(label[la], test[la])
-        t.append(dict)
+            t_dict.setdefault(label[la], test[la])
+        t.append(t_dict)
 
     return t_train_data, t
 
 
-def valid_data(tree, test_data):
+def convert_test_data(t_test_data, label):
+    t = []
+    for test in t_test_data:
+        dict = {}
+        for la in range(len(label)):
+            dict.setdefault(label[la], test[la])
+        t.append(dict)
+    return t
+
+
+def valid_data(test_data, tree):
     valid = 0
     for test in test_data:
-        if test['App-Name'] == 'valid words' and test['Search-Result'] == 'valid search result' and test['Search-Index'] == 'valid search index':
+        if test['Search-Result'] == 'valid search result' and test['Search-Index'] == 'valid search index':
+            if test['Result'] == 'success':
+                valid+1
+        else:
+            if test['Result'] == 'failed':
+                valid += 1
+
+    print('prob is ' + str(float(valid)/len(test_data)))
+    return float(valid)/len(test_data)
+
+def valid_f_data(test_data, tree):
+    valid = 0
+    for test in test_data:
+        if test['App-Name'] == 'valid words':
             if test['Result'] == 'success':
                 valid+=1
         else:
@@ -179,6 +203,7 @@ def cross_validation_split_for_random_forest(data_set, n):
 
 def cal_random_forest_prob(all_data, label):
     datas = cross_validation_split_for_random_forest(all_data, 10)
+    probs = []
     for data in datas:
         l = list(label)
         train_data = list(datas)
@@ -187,25 +212,71 @@ def cal_random_forest_prob(all_data, label):
         for d in train_data:
             da += d
         test_data = data
-        print(da)
-        tree = create_tree(l, train_data)
-
+        td = convert_test_data(test_data, l)
+        tree = create_tree(l, da)
         print(tree)
+        prob = valid_f_data(td, tree)
+        probs.append(prob)
+
+    print('max is ' + str(max(probs)))
+
+def cal_alpha(error):
+    alpha = 1 / 2 * log((1 - error) / error)
+    return alpha
+
+
+def cal_new_weight(alpha, weight):
+    new_weight = []
+    sum_weight = 0
+    for i in range(len(weight)):
+        flag = 1
+        weighti = weight[i] * exp(-alpha * flag)
+        new_weight.append(weighti)
+        sum_weight += weighti
+    return new_weight
+
+
+def train_ada_boost(label, data, error_threshold, max_iter):
+    fx = {}
+    weight = []
+    num = len(label)
+    for i in range(num):
+        w = float(1 / num)
+        weight.append(w)
+
+    for i in range(max_iter):
+        fx[i] = {}
+        td = convert_test_data(data, label)
+        prob = valid_data(td, labels)
+        error = (weight[i] * prob)
+        alpha = cal_alpha(error)
+        weight = cal_new_weight(alpha, weight)
+        fx[i]['alpha'] = alpha / num
+        if error < error_threshold:
+            break
+    return fx
+
 
 
 if __name__ == '__main__':
     labels, data = load_words_data()
     l = list(labels)
-    random.shuffle(data)
+    # random.shuffle(data)
+
     train_data, test_data = create_train_test_data(data, labels)
     t = time.time()
     tree = create_tree(labels, train_data)
-    valid_data(tree, test_data)
+    valid_data(test_data, tree)
     print('time gap is:' + str(time.time() - t) )
     print (tree)
+
     t1 = time.time()
     cal_random_forest_prob(data, l)
-    print('time t1 is:' + str(time.time() - t1) )
+    print('time t1 gap is:' + str(time.time() - t1) )
+
+    ada = train_ada_boost(l, data, 0.01, 5)
+    print(ada)
+
 
     # with open('tree.json', 'w') as outfile:
     #     json.dump(tree, outfile)
