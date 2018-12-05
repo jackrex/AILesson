@@ -54,6 +54,7 @@ def split_bayesian():
     print('split_bayesian')
     t = time.time()
     x_train, x_test, y_train, y_test = train_test_split(train_movie_data.data, train_movie_data.target, test_size=0.25, random_state=33)
+    print(x_test)
     count_vec = CountVectorizer()
     x_count_train = count_vec.fit_transform(x_train)
     x_count_test = count_vec.transform(x_test)
@@ -113,19 +114,19 @@ def optimize_logistic_regression():
 
 if __name__ == '__main__':
 
-    bayesian = MultinomialNB()
-    logistic_regression = LogisticRegression()
-    random_forest = RandomForestClassifier()
-    decision_tree = DecisionTreeClassifier()
-    logistic_cv = LogisticRegressionCV(cv=5, max_iter=100, n_jobs=-1)
+    # bayesian = MultinomialNB()
+    # logistic_regression = LogisticRegression()
+    # random_forest = RandomForestClassifier()
+    # decision_tree = DecisionTreeClassifier()
+    # logistic_cv = LogisticRegressionCV(cv=5, max_iter=100, n_jobs=-1)
 
-    # split_bayesian()
+    split_bayesian()
 
-    classifier_report(bayesian)
-    classifier_report(logistic_regression)
-    classifier_report(logistic_cv)
-    classifier_report(random_forest)
-    classifier_report(decision_tree)
+    # classifier_report(bayesian)
+    # classifier_report(logistic_regression)
+    # classifier_report(logistic_cv)
+    # classifier_report(random_forest)
+    # classifier_report(decision_tree)
 
     # optimize_logistic_regression()
 
