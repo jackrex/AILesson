@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 from openpyxl import load_workbook
 from sklearn.svm import SVC
-from sklearn.svm import LinearSVC
-from sklearn.svm import NuSVC
 import time
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
@@ -72,22 +70,37 @@ def load_iris():
     iris = datasets.load_iris()
     return iris.target, iris.data
 
+def load_digits():
+    digits = datasets.load_digits()
+    return digits.target, digits.data
+
 def svm(k):
-    labels, data = load_words_data()
-    t = time.time()
+    print('=======' + k + '=======')
+    labels, data = load_digits()
     x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.3, random_state=33)
-    svc = SVC(kernel=k, C=1.0)
-    svc.fit(x_train, y_train)
-    y_predict = svc.predict(x_test)
-    print('The result score is', svc.score(x_test, y_test))
-    print(classification_report(y_test, y_predict))
-    print('Time usage: ' + str(time.time() - t))
+    clf = SVC(kernel=k, C=10,gamma=0.7,degree=3)
+    tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
+                         'C': [1, 10, 100, 1000]},
+                        {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+    clf = GridSearchCV(SVC(), tuned_parameters, cv=5)
+    clf.fit(x_train, y_train)
+    print(clf.best_params_)
+    y_predict = clf.predict(x_test)
+    print('The result score is', clf.score(x_test, y_test))
+    # print(classification_report(y_test, y_predict))
 
 
 if __name__ == '__main__':
-    kernels = ['linear', 'rbf', 'poly', 'sigmod', 'precomputed']
-    for kernel in kernels:
-        svm(kernel)
+    svm('GridSearch')
+
+    # kernels = ['linear', 'rbf', 'poly', 'sigmoid']
+    # for kernel in kernels:
+    #     svm(kernel)
+
+
+
+
+
 
 
 
