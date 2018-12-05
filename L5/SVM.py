@@ -75,23 +75,33 @@ def load_digits():
     return digits.target, digits.data
 
 def svm(k):
+    t = time.time()
     print('=======' + k + '=======')
-    labels, data = load_digits()
+    labels, data = load_words_data()
     x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.3, random_state=33)
-    clf = SVC(kernel=k, C=10,gamma=0.7,degree=3)
+    clf = SVC(kernel=k, C=1, gamma=0.0004)
+    clf.fit(x_train, y_train)
+    print('The result score is', clf.score(x_test, y_test))
+    print('Time usage: ' + str(time.time() - t))
+
+
+def best_svm(k):
+    print('=======' + k + '=======')
+    labels, data = load_words_data()
+    x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.3, random_state=33)
     tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
                          'C': [1, 10, 100, 1000]},
-                        {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+                        {'kernel': ['linear'], 'C': [1, 10, 100, 1000]},
+                        {'kernel': ['poly'], 'C': [1, 10, 100, 1000]},
+                        {'kernel': ['sigmoid'], 'C': [1, 10, 100, 1000]}]
     clf = GridSearchCV(SVC(), tuned_parameters, cv=5)
     clf.fit(x_train, y_train)
     print(clf.best_params_)
-    y_predict = clf.predict(x_test)
     print('The result score is', clf.score(x_test, y_test))
-    # print(classification_report(y_test, y_predict))
 
 
 if __name__ == '__main__':
-    svm('GridSearch')
+    best_svm('GridSearch')
 
     # kernels = ['linear', 'rbf', 'poly', 'sigmoid']
     # for kernel in kernels:
