@@ -6,8 +6,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.model_selection import GridSearchCV
 
-MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/test/'
-train_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['pos'], True, True, None, 'strict', 42)
+MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
+train_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['unsup'], True, True, None, 'strict', 42)
 
 def print_top_words(model, feature_names, n_top_words):
     for topic_idx, topic in enumerate(model.components_):
@@ -23,7 +23,7 @@ def lda_train():
                                 stop_words='english')
     tf = count_vec.fit_transform(train_movie_data.data)
 
-    n_topics = 30
+    n_topics = 2
     lda = LatentDirichletAllocation(n_topics=n_topics,
                                     max_iter=50,
                                     learning_method='batch',
