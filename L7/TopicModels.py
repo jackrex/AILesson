@@ -11,6 +11,10 @@ from wordcloud import WordCloud
 from scipy.misc import imread
 from random import choice
 import matplotlib.pyplot as plt
+import pandas as pd
+import sys
+
+
 
 
 MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
@@ -107,8 +111,9 @@ def draw_cloud(mask_path, word_freq, save_path):
     plt.show()
 
 if __name__ == '__main__':
-    lda_train()
-    draw_cloud()
+    top_dict = lda_train()
+    d = {'items': top_dict}
+    draw_cloud("./input.png", d, "./output.png")
 
 
 
