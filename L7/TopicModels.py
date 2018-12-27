@@ -5,6 +5,7 @@ from sklearn import datasets
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.model_selection import GridSearchCV
+from sklearn.naive_bayes import GaussianNB
 
 
 MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
@@ -37,10 +38,10 @@ def lda_train():
     n_topics = 20
     lda = LatentDirichletAllocation(n_components=n_topics,
                                     max_iter=10,
-                                    learning_method='online',
+                                    learning_method='batch',
                                     random_state=0,
-                                    topic_word_prior=0.2,
                                     perp_tol=0.01,
+                                    topic_word_prior=0.2,
                                     n_jobs=-1)
     lda.fit(tf)
     doc_topic_dist = lda.transform(tf)
@@ -60,28 +61,28 @@ def print_top_words(model, feature_names, n_top_words):
     print (model.components_)
 
 def find_best_parameters():
-    n_features = 250
-    count_vec = CountVectorizer(max_df=1.0, min_df=5,
-                                max_features=n_features,
+    count_vec = CountVectorizer(max_df=1.0, min_df=2,
+                                max_features=1000,
                                 stop_words='english')
     tf = count_vec.fit_transform(train_movie_data.data)
 
     parameters = {'learning_method': ('batch', 'online'),
                   'n_components': range(20, 75, 5),
                   'perp_tol': (0.001, 0.01, 0.1),
-                  'doc_topic_prior': (0.001, 0.01, 0.05, 0.1, 0.2),
                   'topic_word_prior': (0.001, 0.01, 0.05, 0.1, 0.2),
                   }
 
     lda = LatentDirichletAllocation()
     model = GridSearchCV(lda, parameters)
     model.fit(tf)
-    sorted(model.cv_results_.keys())
     print(model.best_params_)
-    print(lda.perplexity(tf))
+
+
+def bayes_valid():
 
 
 if __name__ == '__main__':
     lda_train()
     # find_best_parameters()
+
 
