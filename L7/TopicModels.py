@@ -10,42 +10,37 @@ from sklearn.model_selection import GridSearchCV
 MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
 train_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['unsup'], True, True, None, 'strict', 42)
 
-def print_top_words(model, feature_names, n_top_words):
-    for topic_idx, topic in enumerate(model.components_):
-        print ("Topic #%d:" % topic_idx)
-        print (" ".join([feature_names[i]
-                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
-    print (model.components_)
-
-def lda_train():
+def load_data_vector():
     count_vec = CountVectorizer(max_df=1.0, min_df=2,
+                                max_features=1000,
                                 stop_words='english')
     tf = count_vec.fit_transform(train_movie_data.data)
     words = count_vec.get_feature_names()
     tf_array = tf.toarray()
 
-    print(words)
-    print('weight = :' + str(len(tf.toarray())))
+    # result_dic = {}
+    # print("words---->count")
+    # for i in range(len(words)):
+    #     key = "%s"%(words[i])
+    #     result_dic[key] = 0
+    #     for j in range(len(tf_array)):
+    #         result_dic[key] += tf_array[j][i]
+    #
+    # result_dic = sorted(result_dic.items(), key=lambda d: d[1], reverse=True)
+    # top_500_dic = result_dic[0:500]
+    #
+    # print(top_500_dic)
+    return tf, count_vec
 
-    result_dic = {}
-
-    print("words---->count")
-    for i in range(len(words)):
-        key = "%s"%(words[i])
-        result_dic[key] = 0
-        for j in range(len(tf_array)):
-            result_dic[key] += tf_array[j][i]
-
-    result_dic = sorted(result_dic.items(), key=lambda d: d[1], reverse=True)
-    top_500_dic = result_dic[1:501]
-
-    print(top_500_dic)
-
+def lda_train():
+    tf, count_vec = load_data_vector()
     n_topics = 20
     lda = LatentDirichletAllocation(n_components=n_topics,
-                                    max_iter=500,
-                                    learning_method='batch',
+                                    max_iter=10,
+                                    learning_method='online',
                                     random_state=0,
+                                    topic_word_prior=0.2,
+                                    perp_tol=0.01,
                                     n_jobs=-1)
     lda.fit(tf)
     doc_topic_dist = lda.transform(tf)
@@ -57,6 +52,13 @@ def lda_train():
 
     print(lda.perplexity(tf))
 
+def print_top_words(model, feature_names, n_top_words):
+    for topic_idx, topic in enumerate(model.components_):
+        print ("Topic #%d:" % topic_idx)
+        print (" ".join([feature_names[i]
+                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
+    print (model.components_)
+
 def find_best_parameters():
     n_features = 250
     count_vec = CountVectorizer(max_df=1.0, min_df=5,
@@ -65,7 +67,7 @@ def find_best_parameters():
     tf = count_vec.fit_transform(train_movie_data.data)
 
     parameters = {'learning_method': ('batch', 'online'),
-                  'n_topics': range(20, 75, 5),
+                  'n_components': range(20, 75, 5),
                   'perp_tol': (0.001, 0.01, 0.1),
                   'doc_topic_prior': (0.001, 0.01, 0.05, 0.1, 0.2),
                   'topic_word_prior': (0.001, 0.01, 0.05, 0.1, 0.2),
@@ -75,11 +77,11 @@ def find_best_parameters():
     model = GridSearchCV(lda, parameters)
     model.fit(tf)
     sorted(model.cv_results_.keys())
+    print(model.best_params_)
+    print(lda.perplexity(tf))
+
 
 if __name__ == '__main__':
-    # lda_train()
-    find_best_parameters()
-
-
-
+    lda_train()
+    # find_best_parameters()
 
