@@ -3,6 +3,7 @@
 
 from sklearn import datasets
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.model_selection import GridSearchCV
 
@@ -11,11 +12,15 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
 import time
+import numpy
+import os
+import shutil
 
 MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
 train_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['unsup'], True, True, None, 'strict', 42)
+split_data = datasets.load_files(MOVIE_PATH + 'split/', 'Topics', None, True, True, None, 'strict', 42)
 
 def load_data_vector():
     count_vec = CountVectorizer(max_df=1.0, min_df=2,
@@ -59,6 +64,39 @@ def lda_train():
 
     print(lda.perplexity(tf))
 
+def split_unsup_data():
+    tf, count_vec = load_data_vector()
+    n_topics = 20
+    lda = LatentDirichletAllocation(n_components=n_topics,
+                                    max_iter=10,
+                                    learning_method='batch',
+                                    random_state=0,
+                                    perp_tol=0.01,
+                                    topic_word_prior=0.2,
+                                    n_jobs=-1)
+    lda.fit(tf)
+    doc_topic_dist = lda.transform(tf)
+    print(doc_topic_dist)
+    topics = []
+    for doc_topic_probs in doc_topic_dist:
+        tmp_array = numpy.array(doc_topic_probs)
+        bb = tmp_array.tolist()
+        index = bb.index(max(bb))
+        topics.append(index)
+        print('#Topic is #' + str(index))
+
+    for i in range(0, 20):
+        path = MOVIE_PATH  + 'split/' + 'Topic' + str(i)
+        folder = os.path.exists(path)
+        if not folder:
+            os.makedirs(path)
+
+    for i in range(0, 50000):
+        file_move_path = MOVIE_PATH  + 'split/' + 'Topic' + str(topics[i])
+        file_origin_path = MOVIE_PATH + 'unsup/' + str(i) + '_0.txt'
+        shutil.copy(file_origin_path, file_move_path)
+
+
 def print_top_words(model, feature_names, n_top_words):
     for topic_idx, topic in enumerate(model.components_):
         print ("Topic #%d:" % topic_idx)
@@ -83,34 +121,41 @@ def find_best_parameters():
     model.fit(tf)
     print(model.best_params_)
 
-
-def bayes_valid():
+def classifier_valid():
     bayesian = MultinomialNB()
     logistic_regression = LogisticRegression()
     random_forest = RandomForestClassifier()
     decision_tree = DecisionTreeClassifier()
 
-
+    classifier_report(bayesian)
+    classifier_report(logistic_regression)
+    classifier_report(random_forest)
+    classifier_report(decision_tree)
 
 def classifier_report(classifier):
     t = time.time()
     print(type(classifier))
-    # count_vec = TfidfVectorizer(max_features=None, strip_accents='unicode', analyzer='word',
-    #                                 token_pattern=r'\w{1,}', ngram_range=(1, 2))
-    # x_train = count_vec.fit_transform(train_movie_data.data)
-    # # print('weight is ' + str(x_train.toarray()))
-    # # print(count_vec.get_feature_names())
-    # x_test = count_vec.transform(test_movie_data.data)
-    #
-    # classifier.fit(x_train, train_movie_data.target)
-    #
-    # predicted = classifier.predict(x_test)
-    # print(classification_report(test_movie_data.target, predicted, target_names=train_movie_data.target_names))
-    # print('Time usage: ' + str(time.time() - t))
+    X_train, X_test, Y_train, Y_test = train_test_split(split_data.data, split_data.target, test_size=0.3, random_state=33)
+    # print('weight is ' + str(x_train.toarray()))
+    # print(count_vec.get_feature_names())
+
+    count_vec = TfidfVectorizer(max_features=None, strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}', ngram_range=(1, 2))
+    x_train = count_vec.fit_transform(X_train)
+    # print('weight is ' + str(x_train.toarray()))
+    # print(count_vec.get_feature_names())
+    x_test = count_vec.transform(X_test)
+
+    classifier.fit(x_train, Y_train)
+    print(classifier.score(x_test, Y_test))
+    print('Time usage: ' + str(time.time() - t))
 
 
 if __name__ == '__main__':
-    lda_train()
+    # lda_train()
     # find_best_parameters()
+    # split_unsup_data()
+    classifier_valid()
+
+
 
 
