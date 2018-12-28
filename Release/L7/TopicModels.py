@@ -20,7 +20,7 @@ import shutil
 
 MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
 train_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['unsup'], True, True, None, 'strict', 42)
-split_data = datasets.load_files(MOVIE_PATH + 'split/', 'Topics', None, True, True, None, 'strict', 42)
+split_data = datasets.load_files(MOVIE_PATH + 'split/Topic0', 'Topics', None, True, True, None, 'strict', 42)
 
 def load_data_vector():
     count_vec = CountVectorizer(max_df=1.0, min_df=2,
