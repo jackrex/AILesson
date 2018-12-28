@@ -20,28 +20,30 @@ import shutil
 
 MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
 train_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['unsup'], True, True, None, 'strict', 42)
-split_data = datasets.load_files(MOVIE_PATH + 'split/Topic0', 'Topics', None, True, True, None, 'strict', 42)
+split_data = datasets.load_files(MOVIE_PATH + 'split/', 'Topics', None, True, True, None, 'strict', 42)
+mix_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['mix'], True, True, None, 'strict', 42)
+mix_data_split = datasets.load_files(MOVIE_PATH + 'mix_data/Topic12', 'Topics', None, True, True, None, 'strict', 42)
 
 def load_data_vector():
     count_vec = CountVectorizer(max_df=1.0, min_df=2,
                                 max_features=1000,
                                 stop_words='english')
-    tf = count_vec.fit_transform(train_movie_data.data)
+    tf = count_vec.fit_transform(mix_movie_data.data)
     words = count_vec.get_feature_names()
     tf_array = tf.toarray()
 
-    # result_dic = {}
-    # print("words---->count")
-    # for i in range(len(words)):
-    #     key = "%s"%(words[i])
-    #     result_dic[key] = 0
-    #     for j in range(len(tf_array)):
-    #         result_dic[key] += tf_array[j][i]
-    #
-    # result_dic = sorted(result_dic.items(), key=lambda d: d[1], reverse=True)
-    # top_500_dic = result_dic[0:500]
-    #
-    # print(top_500_dic)
+    result_dic = {}
+    print("words---->count")
+    for i in range(len(words)):
+        key = "%s"%(words[i])
+        result_dic[key] = 0
+        for j in range(len(tf_array)):
+            result_dic[key] += tf_array[j][i]
+
+    result_dic = sorted(result_dic.items(), key=lambda d: d[1], reverse=True)
+    top_500_dic = result_dic[0:500]
+
+    print(top_500_dic)
     return tf, count_vec
 
 def lda_train():
@@ -96,6 +98,63 @@ def split_unsup_data():
         file_origin_path = MOVIE_PATH + 'unsup/' + str(i) + '_0.txt'
         shutil.copy(file_origin_path, file_move_path)
 
+def split_mix_data():
+    tf, count_vec = load_data_vector()
+    n_topics = 20
+    lda = LatentDirichletAllocation(n_components=n_topics,
+                                    max_iter=10,
+                                    learning_method='batch',
+                                    random_state=0,
+                                    perp_tol=0.01,
+                                    topic_word_prior=0.2,
+                                    n_jobs=-1)
+    lda.fit(tf)
+    doc_topic_dist = lda.transform(tf)
+    print(doc_topic_dist)
+    topics = []
+    for doc_topic_probs in doc_topic_dist:
+        tmp_array = numpy.array(doc_topic_probs)
+        bb = tmp_array.tolist()
+        index = bb.index(max(bb))
+        topics.append(index)
+        print('#Topic is #' + str(index))
+
+    for i in range(0, 20):
+        path = MOVIE_PATH + 'mix_data/' + 'Topic' + str(i)
+        folder = os.path.exists(path)
+        if not folder:
+            os.makedirs(path)
+
+    files = os.listdir(MOVIE_PATH + 'mix/')
+    files.sort(key=lambda x: int(x[:-4]))
+
+
+    for i in range(0, 25000):
+        file_move_path = MOVIE_PATH + 'mix_data/' + 'Topic' + str(topics[i])
+        file_origin_path = MOVIE_PATH + 'mix/' + files[i]
+        shutil.copy(file_origin_path, file_move_path)
+
+def split_mix_data_neg_pos():
+    files = os.listdir(MOVIE_PATH + 'mix_data/')
+    for folder_name in files:
+        folder_neg = os.path.exists(MOVIE_PATH + 'mix_data/' + folder_name + '/neg')
+        if not folder_neg:
+            os.makedirs(MOVIE_PATH + 'mix_data/' + folder_name + '/neg')
+        folder_pos = os.path.exists(MOVIE_PATH + 'mix_data/' + folder_name + '/pos')
+        if not folder_pos:
+            os.makedirs(MOVIE_PATH + 'mix_data/' + folder_name + '/pos')
+
+        txts = os.listdir(MOVIE_PATH + 'mix_data/' + folder_name + '/')
+        for txt in txts:
+            if '_' not in txt:
+                continue
+
+            score = txt[:-4].split('_')[1]
+            if int(score) > 5:
+                shutil.move(MOVIE_PATH + 'mix_data/' + folder_name + '/' + txt, MOVIE_PATH + 'mix_data/' + folder_name + '/' + 'pos/' + txt)
+            else:
+                shutil.move(MOVIE_PATH + 'mix_data/' + folder_name + '/' + txt, MOVIE_PATH + 'mix_data/' + folder_name + '/' + 'neg/' + txt)
+
 
 def print_top_words(model, feature_names, n_top_words):
     for topic_idx, topic in enumerate(model.components_):
@@ -135,7 +194,7 @@ def classifier_valid():
 def classifier_report(classifier):
     t = time.time()
     print(type(classifier))
-    X_train, X_test, Y_train, Y_test = train_test_split(split_data.data, split_data.target, test_size=0.3, random_state=33)
+    X_train, X_test, Y_train, Y_test = train_test_split(mix_data_split.data, mix_data_split.target, test_size=0.3, random_state=33)
     # print('weight is ' + str(x_train.toarray()))
     # print(count_vec.get_feature_names())
 
@@ -154,7 +213,10 @@ if __name__ == '__main__':
     # lda_train()
     # find_best_parameters()
     # split_unsup_data()
+    # split_mix_data()
+    # split_mix_data_neg_pos()
     classifier_valid()
+
 
 
 
