@@ -5,8 +5,14 @@ from sklearn import datasets
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.model_selection import GridSearchCV
-from sklearn.naive_bayes import GaussianNB
 
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+from sklearn.metrics import classification_report
+import time
 
 MOVIE_PATH = '/Users/jackrex/Desktop/AILesson/L4/aclImdb/train/'
 train_movie_data = datasets.load_files(MOVIE_PATH, 'Movie Comments', ['unsup'], True, True, None, 'strict', 42)
@@ -79,6 +85,28 @@ def find_best_parameters():
 
 
 def bayes_valid():
+    bayesian = MultinomialNB()
+    logistic_regression = LogisticRegression()
+    random_forest = RandomForestClassifier()
+    decision_tree = DecisionTreeClassifier()
+
+
+
+def classifier_report(classifier):
+    t = time.time()
+    print(type(classifier))
+    # count_vec = TfidfVectorizer(max_features=None, strip_accents='unicode', analyzer='word',
+    #                                 token_pattern=r'\w{1,}', ngram_range=(1, 2))
+    # x_train = count_vec.fit_transform(train_movie_data.data)
+    # # print('weight is ' + str(x_train.toarray()))
+    # # print(count_vec.get_feature_names())
+    # x_test = count_vec.transform(test_movie_data.data)
+    #
+    # classifier.fit(x_train, train_movie_data.target)
+    #
+    # predicted = classifier.predict(x_test)
+    # print(classification_report(test_movie_data.target, predicted, target_names=train_movie_data.target_names))
+    # print('Time usage: ' + str(time.time() - t))
 
 
 if __name__ == '__main__':

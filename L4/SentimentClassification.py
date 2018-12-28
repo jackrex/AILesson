@@ -18,7 +18,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import RandomizedSearchCV
 
 import pandas
 import time
