@@ -1,3 +1,5 @@
 venv/
 aclimdb/
 .idea/
+训练集/
+验证集/
