@@ -11,6 +11,9 @@ from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.callbacks import Callback
 
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 
 TRAIN_PATH = '/Users/jackrex/Desktop/AILesson/L8/训练集/'
 TEST_PATH ='/Users/jackrex/Desktop/AILesson/L8/验证集/'
@@ -37,7 +40,7 @@ model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(2, activation='softmax'))
 
-epochs = 50
+epochs = 10
 lrate = 0.01
 decay = lrate/epochs
 sgd = SGD(lr=lrate, momentum=0.9, decay=decay, nesterov=False)
@@ -56,6 +59,6 @@ class LossHistory(Callback):
 history = LossHistory()
 early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=0, mode='auto')
 
-n = 5
+n = 10
 ratio = 0.1
-fit_model = model.fit_generator(train_generator, steps_per_epoch= int(n * (1 - ratio)), epochs=50, validation_data= test_generator, validation_steps= int(n*ratio))
+fit_model = model.fit_generator(train_generator, steps_per_epoch= int(n * (1 - ratio)), epochs=10, validation_data= test_generator, validation_steps= int(n*ratio))
