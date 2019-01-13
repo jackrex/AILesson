@@ -9,7 +9,6 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras_tqdm import TQDMCallback  # add progress
 from keras.callbacks import Callback
-import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -77,7 +76,7 @@ n = 10
 ratio = 0.1
 fit_model = model.fit_generator(train_generator, steps_per_epoch=int(n * (1 - ratio)), epochs=epochs,
                                 validation_data=test_generator, validation_steps=int(n * ratio),
-                                callbacks=[early_stopping, history])
+                                callbacks=[TQDMCallback(), early_stopping, history])
 
 
 losses, val_losses = history.losses, history.val_losses
