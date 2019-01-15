@@ -10,7 +10,12 @@ from keras.optimizers import SGD
 from keras_tqdm import TQDMCallback  # add progress
 from keras.callbacks import Callback
 import matplotlib.pyplot as plt
+import os
 
+import numpy as np
+from keras.applications.imagenet_utils import decode_predictions
+from keras.preprocessing import image
+from keras.applications import *
 
 from PIL import ImageFile
 
@@ -20,6 +25,9 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 TRAIN_PATH = '/Users/jackrex/Desktop/AILesson/L8/训练集/'
 TEST_PATH = '/Users/jackrex/Desktop/AILesson/L8/验证集/'
+
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # Build Model
 
@@ -46,7 +54,7 @@ model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(2, activation='softmax'))
 
-epochs = 20
+epochs = 10
 l_rate = 0.01
 decay = l_rate / epochs
 sgd = SGD(lr=l_rate, momentum=0.9, decay=decay, nesterov=False)
@@ -65,27 +73,48 @@ class LossHistory(Callback):
         self.losses.append(logs.get('loss'))
         self.val_losses.append(logs.get('val_loss'))
 
-history = LossHistory()
 
+history = LossHistory()
 early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=0, mode='auto')
 
+
+class SuccessHistory(Callback):
+    def on_train_begin(self, logs={}):
+        self.successes = []
+        self.val_successes = []
+
+    def on_epoch_end(self, epoch, logs=None):
+        self.successes.append(logs.get('acc'))
+        self.val_successes.append(logs.get('val_acc'))
+
+
+success_history = SuccessHistory()
+early_s_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', min_delta=0, patience=2, verbose=0, mode='auto')
 
 # Training
 
 n = 10
 ratio = 0.1
 fit_model = model.fit_generator(train_generator, steps_per_epoch=int(n * (1 - ratio)), epochs=epochs,
-                                validation_data=test_generator, validation_steps=int(n * ratio),
-                                callbacks=[TQDMCallback(), early_stopping, history])
+                                validation_data=test_generator, validation_steps=int(n * ratio), callbacks=[success_history])
+
+file_path = TEST_PATH + '卡通/021267.jpg'
+
+img = image.load_img(file_path, target_size=(150, 150))
+x = image.img_to_array(img)
+x = np.expand_dims(x, axis=0)
 
 
-losses, val_losses = history.losses, history.val_losses
-fig = plt.figure(figsize=(15, 5))
-plt.plot(fit_model.history['loss'], 'g', label='train losses')
-plt.plot(fit_model.history['val_loss'], 'r', label='val losses')
+(other, cartoon) = model.predict(x)[0]
+print('Predicted:', other, cartoon)
+
+losses, val_losses = success_history.successes, success_history.val_successes
+fig = plt.figure(figsize=(20, 5))
+plt.plot(fit_model.history['acc'], 'g', label='train accuracy')
+plt.plot(fit_model.history['val_acc'], 'r', label='val accuracy')
 plt.grid(True)
-plt.title('Training Loss vs Validation Loss')
+plt.title('Training Accuracy vs Validation Accuracy')
 plt.xlabel('Epochs')
-plt.ylabel('Loss')
+plt.ylabel('Accuracy')
 plt.legend()
 plt.show()
