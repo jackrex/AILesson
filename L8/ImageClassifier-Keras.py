@@ -35,9 +35,9 @@ batch_size = 32
 train_data_gen = ImageDataGenerator(rescale=1 / 255., shear_range=0.2, zoom_range=0.2, horizontal_flip=True)
 test_data_gen = ImageDataGenerator(rescale=1 / 255.)
 
-train_generator = train_data_gen.flow_from_directory(TRAIN_PATH, target_size=(150, 150), batch_size=batch_size,
+train_generator = train_data_gen.flow_from_directory(TRAIN_PATH, classes=['其他', '卡通'], target_size=(150, 150), batch_size=batch_size,
                                                      class_mode="categorical")
-test_generator = test_data_gen.flow_from_directory(TEST_PATH, target_size=(150, 150), batch_size=batch_size,
+test_generator = test_data_gen.flow_from_directory(TEST_PATH, target_size=(150, 150),classes=['其他', '卡通'], batch_size=batch_size,
                                                    class_mode="categorical")
 
 model = Sequential()
@@ -98,15 +98,21 @@ ratio = 0.1
 fit_model = model.fit_generator(train_generator, steps_per_epoch=int(n * (1 - ratio)), epochs=epochs,
                                 validation_data=test_generator, validation_steps=int(n * ratio), callbacks=[success_history])
 
-file_path = TEST_PATH + '卡通/021267.jpg'
+dir_path = TEST_PATH + '其他'
+for pic_file in os.listdir(dir_path):
+    file_path = TEST_PATH + '其他/' + pic_file
+    img = image.load_img(file_path, target_size=(150, 150))
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+#
+#     model = ResNet50(weights='imagenet')
+#     y = model.predict(x)
+#     print('Predicted:', decode_predictions(y, top=3)[0])
 
-img = image.load_img(file_path, target_size=(150, 150))
-x = image.img_to_array(img)
-x = np.expand_dims(x, axis=0)
-
-
-(other, cartoon) = model.predict(x)[0]
-print('Predicted:', other, cartoon)
+    result = model.predict(x)
+    #
+    (other, cartoon) = model.predict(x)[0]
+    print('Predicted:', other, cartoon)
 
 losses, val_losses = success_history.successes, success_history.val_successes
 fig = plt.figure(figsize=(20, 5))
